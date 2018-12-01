@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+import sys
+
+def f(data):
+    track = {}
+    acc = 0
+    while 1:
+        for d in data:
+            acc = acc + d
+            if acc in track:
+                return acc
+            track[acc] = True
+
+print f(map(lambda x: int(x.replace('+', '')), open(sys.argv[1], 'r').read().split('\n')[:-1]))
