@@ -1,0 +1,25 @@
+#!/usr/bin/python
+import sys
+data = map(lambda x: list(x), open(sys.argv[1], 'r').read().split('\n')[:-1])
+
+def r():
+    for ia in data:
+        for ja in data:
+            mm = 0
+            ci = -1
+            for c in range(0, len(ia)):
+                lm = mm
+                mm += 0 if ia[c] == ja[c] else 1
+                if mm == 1 and lm == 0:
+                    ci = c
+                if mm > 1:
+                    continue
+            if mm == 1:
+                return (ia, ja, ci)
+
+rv = r()
+print "box1: {}".format("".join(rv[0]))
+print "box2: {}".format("".join(rv[1]))
+print "diff: " + ' ' * rv[2] + "^"
+del rv[0][rv[2]]
+print "sltn: {}".format("".join(rv[0]))
