@@ -1,0 +1,14 @@
+#!/usr/bin/python
+import sys
+
+def pone(istr):
+    ld = {}
+    def cone(ch):
+        ld[ch] = 1 if ch not in ld else ld[ch] + 1
+    def isxasint(x_a):
+        return int(bool(reduce(lambda a, x: a + (x == x_a), ld.values(), 0)))
+    map(lambda xc: cone(xc), list(istr))
+    return (isxasint(2), isxasint(3))
+
+(a, b) = reduce(lambda a, x: (a[0]+x[0], a[1]+x[1]), map(lambda xs: pone(xs), open(sys.argv[1], 'r').read().split('\n')[:-1]))
+print "{} * {} = {}".format(a, b, a * b)
