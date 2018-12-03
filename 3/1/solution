@@ -1,0 +1,23 @@
+#!/usr/bin/python
+import sys
+import re
+DIM = 1000
+
+def sq(d,f=0):
+    return map(lambda x: map(lambda y: f, range(0, d)), range(0, d))
+
+rx = r'#(\d+)\s@\s(\d+),(\d+):\s(\d+)x(\d+)'
+data = map(lambda x: re.search(rx, x).groups(), open(sys.argv[1], 'r').read().split('\n')[:-1])
+track = sq(DIM)
+
+for (idx, x, y, w, h) in data:
+    for i in range(int(x), int(x)+int(w)):
+        for j in range(int(y), int(y)+int(h)):
+            track[i][j] += 1
+
+accum = 0
+for ar in track:
+    for e in ar:
+        accum += int(e >= 2)
+
+print "{}".format(accum)
