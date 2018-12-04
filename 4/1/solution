@@ -1,0 +1,54 @@
+#!/usr/bin/python
+import re
+import sys
+rx = r'\[(\d{4})\-(\d{2})\-(\d{2})\s(\d{2}):(\d{2})\]\s((?:Guard\s\#(\d+)\sbegins\sshift)|(?:wakes\sup)|(?:falls\sasleep))'
+
+data = {int("{0}{1}{2}{3}{4}".format(*x)): x for x in 
+        map(lambda x: re.search(rx, x).groups(), 
+            open(sys.argv[1], 'r').read().split('\n')[:-1])}
+
+ksorted = list(data.keys())
+ksorted.sort()
+
+timemap = {}
+
+curGid = None
+sMin = None
+for k in ksorted:
+    (year, month, day, hour, minute, action, gid) = data[k]
+    if gid is not None:
+        curGid = gid
+        if curGid not in timemap:
+            timemap[curGid] = {'a': map(lambda x: 0, range(0, 60))}
+    if curGid is not None:
+        if action == 'falls asleep':
+            if sMin != None:
+                print "NO!!"
+                sys.exit(-1)
+            sMin = int(minute)
+        elif action == 'wakes up':
+            if sMin == None or curGid == None:
+                print "NO!"
+                sys.exit(-1)
+            for i in range(sMin, int(minute)):
+                timemap[curGid]['a'][i] += 1
+            sMin = None
+
+lazyMin = -1
+lazy = None
+for ik in timemap.keys():
+    timemap[ik]['t'] = reduce(lambda a, x: a + x, timemap[ik]['a'])
+    if timemap[ik]['t'] > lazyMin:
+        lazyMin = timemap[ik]['t']
+        lazy = ik
+
+print "Laziest guard: {}".format(lazy)
+
+lazyMin = -1
+lazyIdx = -1 
+for i in range(0, 60):
+    if timemap[lazy]['a'][i] > lazyMin:
+        lazyMin = timemap[lazy]['a'][i]
+        lazyIdx = i
+
+print "Most sleep: {}\nAt minute: {}".format(lazyMin, lazyIdx)
