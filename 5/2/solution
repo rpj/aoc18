@@ -1,0 +1,37 @@
+#!/usr/bin/python
+import sys
+
+def react(s):
+    si = 0
+    while si < len(s) - 1:
+        if abs(ord(s[si]) - ord(s[si+1])) == 32:
+            del s[si]
+            del s[si]
+            si -= 1 if si > 0 else 0
+        else:
+            si += 1
+    return s
+
+def collapse(s, t):
+    tC = chr(ord(t.lower()) - 32)
+    lT = None
+    si = 0
+    while si < len(s) - 1:
+        if s[si] == t or s[si] == tC:
+            lT = t if s[si] == tC else tC
+            if si + 1 < len(s):
+                for j in range(si+1, len(s)):
+                    if s[j] == (t if s[si] == tC else tC):
+                        del s[j]
+                        del s[si]
+                        si -= 1
+                        break
+        else:
+            si += 1
+    return s
+
+inp = list(open(sys.argv[1], 'r').read().strip())
+
+for c in map(lambda x: chr(x), range(ord('a'), ord('z') + 1)):
+    data = react(collapse(list(inp), c))
+    print "'{}': {} units".format(c, len(data))
