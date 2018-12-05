@@ -18,7 +18,6 @@ def collapse(s, t):
     si = 0
     while si < len(s) - 1:
         if s[si] == t or s[si] == tC:
-            lT = t if s[si] == tC else tC
             if si + 1 < len(s):
                 for j in range(si+1, len(s)):
                     if s[j] == (t if s[si] == tC else tC):
