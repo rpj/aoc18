@@ -29,33 +29,35 @@ def bounding_box(coords):
             lims["y"][1] = c[1]
     lims["w"] = lims["x"][1] - lims["x"][0]
     lims["h"] = lims["y"][1] - lims["y"][0]
-    lims["box"] = [[None for _ in range(0, lims["x"][1]+2)] for _ in range(0, lims["y"][1]+2)]
+    lims["box"] = [[None for _ in range(0, lims["y"][0] + lims["y"][1] + 1)] for _ in range(0, lims["x"][0] + lims["x"][1] + 1)]
     return lims
 
 box = bounding_box(coords)
-#print "BB: {}".format(box)
-
+print "BB: {}".format(box)
 b = box["box"]
-for bc_i in range(0, len(b)):
-    for br_i in range(0, len(b[bc_i])):
-        c = (br_i, bc_i)
-#        print "C:  {}".format(c)
+print "Bounds: {} x {}".format(len(b), len(b[0]))
+
+for by_i in range(0, len(b)):
+    print "BY_I {} len {}".format(by_i, range(0, len(b[by_i])))
+    for bx_i in range(0, len(b[by_i])):
+        c = (by_i, bx_i)
+        print "C:  {}".format(c)
 
         dists = map(lambda x: abs(x[0] - c[0]) + abs(x[1] - c[1]), coords)
-#        print "D:  {}".format(dists)
+        print "D:  {}".format(dists)
         cc_i = None
         cc_t = g_max
         for di in range(0, len(dists)):
             if dists[di] <= cc_t:
                 cc_i = di if dists[di] < cc_t else '.'
                 cc_t = dists[di]
-#        print "{},{} = {}".format(br_i, bc_i, cc_i)
-        b[bc_i][br_i] = cc_i
+        print "{},{} = {}".format(c[0], c[1], cc_i)
+        b[c[0]][c[1]] = cc_i
 
-#print "Box:"
-#for br in b:
-#    print "{}".format("".join(map(lambda x: str(x), br)))
-#print
+print "Box:"
+for br in b:
+    print "{}".format("".join(map(lambda x: str(x), br)))
+print
 
 mosts = {k: 0 for k in range(0, len(coords))}
 mosts["."] = 0
@@ -74,7 +76,6 @@ for (k, v) in mosts.iteritems():
             most = v
             most_coord = cc
 
-print "Bounds: {} x {}".format(len(b), len(b[0]))
 print "XLim:   {}".format(box["x"])
 print "YLim:   {}".format(box["y"])
 print "Best:\n{} @ {}".format(most, most_coord)
