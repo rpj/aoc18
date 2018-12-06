@@ -53,7 +53,6 @@ for br in b:
     print "{}".format("".join(map(lambda x: str(x), br)))
 print
 
-# 'mosts' doesn't check for contiguous area! that is a problem...
 mosts = {k: 0 for k in range(0, len(coords))}
 mosts["."] = 0
 for br in b:
