@@ -1,0 +1,74 @@
+#!/usr/bin/python
+import sys
+
+coords = map(lambda y: (int(y[0]), int(y[1])), map(lambda x: x.split(','), open(sys.argv[1], 'r').read().split('\n')[:-1]))
+
+# TEST #
+t_in = [[1, 1],
+        [1, 6],
+        [8, 3],
+        [3, 4],
+        [5, 5],
+        [8, 9]]
+coords = t_in
+# TEST #
+
+g_min = -sys.maxint - 1
+g_max = sys.maxint
+
+def bounding_box(coords):
+    lims = {"x":[g_max, g_min], "y":[g_max, g_min]}
+    for c in coords:
+        if c[0] < lims["x"][0]:
+            lims["x"][0] = c[0]
+        elif c[0] > lims["x"][1]:
+            lims["x"][1] = c[0]
+        if c[1] < lims["y"][0]:
+            lims["y"][0] = c[1]
+        elif c[1] > lims["y"][1]:
+            lims["y"][1] = c[1]
+    lims["w"] = lims["x"][1] - lims["x"][0]
+    lims["h"] = lims["y"][1] - lims["y"][0]
+    lims["box"] = [[None for _ in range(0, lims["w"])] for _ in range(0, lims["h"])]
+    return lims
+
+box = bounding_box(coords)
+
+b = box["box"]
+for br_i in range(0, len(b)):
+    for bc_i in range(0, len(b[br_i])):
+        c = (br_i, bc_i)
+
+        dists = map(lambda x: abs(x[0] - c[0]) + abs(x[1] - c[1]), coords)
+        cc_i = None
+        cc_t = g_max
+        for di in range(0, len(dists)):
+            if dists[di] <= cc_t:
+                cc_i = di if dists[di] < cc_t else '.'
+                cc_t = dists[di]
+        b[br_i][bc_i] = cc_i
+
+print "Box:"
+for br in b:
+    print "{}".format("".join(map(lambda x: str(x), br)))
+print
+
+# 'mosts' doesn't check for contiguous area! that is a problem...
+mosts = {k: 0 for k in range(0, len(coords))}
+mosts["."] = 0
+for br in b:
+    for bc in br:
+        mosts[bc] += 1
+del mosts["."]
+
+most = g_min
+most_coord = None
+for (k, v) in mosts.iteritems():
+    if v > most:
+        cc = coords[k]
+        if not(cc[0] == box["x"][0] or cc[0] == box["x"][1]
+                or cc[1] == box["y"][1] or cc[1] == box["y"][1]):
+            most = v
+            most_coord = cc
+
+print "Best:\n{} @ {}".format(most, most_coord)
