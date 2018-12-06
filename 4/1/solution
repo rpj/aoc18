@@ -22,14 +22,8 @@ for k in ksorted:
             timemap[curGid] = {'a': map(lambda x: 0, range(0, 60))}
     if curGid is not None:
         if action == 'falls asleep':
-            if sMin != None:
-                print "NO!!"
-                sys.exit(-1)
             sMin = int(minute)
         elif action == 'wakes up':
-            if sMin == None or curGid == None:
-                print "NO!"
-                sys.exit(-1)
             for i in range(sMin, int(minute)):
                 timemap[curGid]['a'][i] += 1
             sMin = None
